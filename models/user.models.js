@@ -31,7 +31,7 @@ User.login = (loginInfo, result) => {
           connection.query(
             `SELECT * FROM userSession WHERE userId = ${res[0].idUser}`,
             (checkErr, checkRslt) => {
-              if (checkRslt.length >= 3) {
+              if (checkRslt.length >= 10) {
                 result({ kind: "too_many_logins" }, null);
               } else {
                 result(null, res[0]);
