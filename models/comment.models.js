@@ -24,6 +24,15 @@ Comment.getAll = (result) => {
     result(null, res);
   });
 };
+Comment.findByLesson = (id, result) => {
+  connection.query(
+    `SELECT *, (SELECT username FROM user WHERE comment.userId = user.idUser) As username, (SELECT roleId FROM user WHERE comment.userId = user.idUser) As roleId , IFNULL((SELECT image FROM avatar WHERE avatar.idAvatar = (SELECT avatarId FROM student WHERE student.userId = comment.userId LIMIT 1) LIMIT 1),(SELECT image FROM teacher WHERE teacher.userId = comment.userId LIMIT 1)) As avatar FROM comment WHERE lessonId = ${id} ORDER BY idComment DESC`,
+    (err, res) => {
+      console.log(err);
+      result(null, res);
+    },
+  );
+};
 
 Comment.findById = (id, result) => {
   connection.query(

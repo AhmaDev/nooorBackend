@@ -44,6 +44,37 @@ Delegate.findById = (id, result) => {
   );
 };
 
+Delegate.findByUserId = (id, result) => {
+  connection.query(
+    `SELECT * FROM delegate LEFT JOIN user ON delegate.userId = user.idUser WHERE delegate.userId = ${id}`,
+    (err, res) => {
+      if (err) {
+        console.log("Find By ID: delegate error:", err);
+        result(err, null);
+        return;
+      }
+      if (res.length == 0) {
+        result({ kind: "not_found" }, null);
+      } else {
+        result(null, res[0]);
+      }
+    },
+  );
+};
+Delegate.courses = (id, result) => {
+  connection.query(
+    `SELECT courseDelegate.*, user.username, user.idUser, user.phone, teacher.image, teacher.userId FROM courseDelegate LEFT JOIN user on courseDelegate.teacherId = user.idUser LEFT JOIN teacher on teacher.userId = user.idUser WHERE delegateId = ${id}`,
+    (err, res) => {
+      if (err) {
+        console.log("Find By ID: delegate error:", err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    },
+  );
+};
+
 Delegate.update = (id, delegate, result) => {
   connection.query(
     `UPDATE delegate SET ? WHERE idDelegate = ${id}`,

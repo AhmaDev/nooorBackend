@@ -31,6 +31,26 @@ LessonFile.create = (newLessonFile, file, result) => {
   );
 };
 
+LessonFile.addAnswer = (newLessonFile, file, result) => {
+  connection.query(
+    `INSERT INTO lessonFileAnswer SET ?`,
+    {
+      studentId: parseInt(newLessonFile.studentId),
+      lessonFileId: parseInt(newLessonFile.fileId),
+    },
+    (err, res) => {
+      var id = res.insertId;
+      for (let i = 0; i < file.length; i++) {
+        connection.query(`INSERT INTO lessonFileAnswerImage SET ?`, {
+          filePath: "files/answers/" + file[i].filename,
+          lessonFileAnswerId: id,
+        });
+      }
+      result(null, { message: "done" });
+    },
+  );
+};
+
 LessonFile.getAll = (result) => {
   connection.query(`SELECT * FROM lessonFile`, (err, res) => {
     result(null, res);
@@ -51,6 +71,43 @@ LessonFile.findById = (id, result) => {
       } else {
         result(null, res[0]);
       }
+    },
+  );
+};
+LessonFile.findStudentAnswer = (studentId, lessonFileId, result) => {
+  connection.query(
+    `SELECT * FROM lessonFileAnswer WHERE studentId = ${studentId} AND lessonFileId = ${lessonFileId}`,
+    (err, res) => {
+      if (err) {
+        console.log("Find By ID: lessonFile error:", err);
+        result(err, null);
+        return;
+      }
+      if (res.length == 0) {
+        result({ kind: "not_found" }, null);
+      } else {
+        connection.query(
+          `SELECT * FROM lessonFileAnswerImage WHERE lessonFileAnswerId = ${res[0].idLessonFileAnswer}`,
+          (lfaErr, lfaRes) => {
+            res[0].images = lfaRes;
+            result(null, res[0]);
+          },
+        );
+      }
+    },
+  );
+};
+
+LessonFile.findLessonAnswers = (lessonFileId, result) => {
+  connection.query(
+    `SELECT lessonFileAnswer.*, user.username, student.*, avatar.* FROM lessonFileAnswer JOIN user on user.idUser = lessonFileAnswer.studentId JOIN student ON student.userId = user.idUser LEFT JOIN avatar ON student.avatarId = avatar.idAvatar WHERE lessonFileId = ${lessonFileId}`,
+    (err, res) => {
+      if (err) {
+        console.log("Find By ID: lessonFile error:", err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
     },
   );
 };

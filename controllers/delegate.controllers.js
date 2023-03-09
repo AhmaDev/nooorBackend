@@ -33,6 +33,23 @@ exports.findOne = (req, res) => {
     } else res.send(data);
   });
 };
+exports.courses = (req, res) => {
+  Delegate.courses(req.params.id, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
+
+exports.findByUserId = (req, res) => {
+  Delegate.findByUserId(req.params.id, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
 exports.updateOne = (req, res) => {
   Delegate.update(req.params.id, req.body, (err, data) => {
     if (err) res.sendStatus(500);

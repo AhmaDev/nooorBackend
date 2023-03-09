@@ -11,6 +11,8 @@ exports.create = (req, res) => {
     schoolName: req.body.schoolName,
     image: req.body.image,
     description: req.body.description,
+    categoryId: req.body.categoryId,
+    subCategoryId: req.body.subCategoryId,
   });
   Teacher.create(teacher, (err, data) => {
     if (err) res.sendStatus(500);
@@ -18,7 +20,7 @@ exports.create = (req, res) => {
   });
 };
 exports.findAll = (req, res) => {
-  Teacher.getAll((err, data) => {
+  Teacher.getAll(req, (err, data) => {
     if (err) res.sendStatus(500);
     else res.send(data);
   });
@@ -26,6 +28,14 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
   Teacher.findById(req.params.id, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
+exports.findByUserId = (req, res) => {
+  Teacher.findByUserId(req.params.id, (err, data) => {
     if (err) {
       if (err.kind == "not_found") res.sendStatus(404);
       else res.sendStatus(500);

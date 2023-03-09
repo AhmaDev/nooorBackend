@@ -4,6 +4,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 const fs = require("fs");
+const { sendMessage } = require("./middlewares/notifications.middlewares");
 var app = express();
 
 // app.use(history());
@@ -38,8 +39,20 @@ app.use(apiBaseUrl, require("./routes/teacher.routes"));
 app.use(apiBaseUrl, require("./routes/vdoCipher.routes"));
 app.use(apiBaseUrl, require("./routes/setting.routes"));
 app.use(apiBaseUrl, require("./routes/lessonFile.routes"));
+app.use(apiBaseUrl, require("./routes/lessonFileAnswerImage.routes"));
+app.use(apiBaseUrl, require("./routes/lessonFileAnswer.routes"));
 
 app.get("/api/version", (req, res) => res.json({ version: "1.0.0" }));
+app.get("/api/sendMessage", (req, res) => {
+  sendMessage({
+    title: "Hello",
+    body: "world",
+    recievers: [
+      "fvqpY4sLQhWobooM3UOq7C:APA91bFFVpohOY_w_jE9KsV2KlYVPmPriUy6ruv9MyoA0A2vJMgo9sFBewkIr_iCiaTbPTf94pNViIzNXX4TOzoLTqwxoXBvaIaSNBzjrCQu7r_CYP52l4j75LdAcuKq_x3p1z1hx5wc",
+    ],
+  });
+  res.json({ version: "1.0.0" });
+});
 
 app.get("/api/files/:path/:file", function (request, response) {
   let file = request.params.file;

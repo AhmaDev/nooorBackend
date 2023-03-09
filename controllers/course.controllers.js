@@ -29,15 +29,61 @@ exports.findAll = (req, res) => {
     } else res.send(data);
   });
 };
-
-exports.findOne = (req, res) => {
-  Course.findById(req.params.id, (err, data) => {
+exports.myCourses = (req, res) => {
+  Course.myCourses(req.params.id, (err, data) => {
     if (err) {
       if (err.kind == "not_found") res.sendStatus(404);
       else res.sendStatus(500);
     } else res.send(data);
   });
 };
+
+exports.findOne = (req, res) => {
+  Course.findById(req.params.id, req.headers.authorization, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
+exports.getCourseCodes = (req, res) => {
+  Course.getCourseCodes(req.params.id, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
+exports.checkRedeemCode = (req, res) => {
+  Course.checkRedeemCode(
+    req.body.code,
+    req.headers.authorization,
+    (err, data) => {
+      if (err) {
+        if (err.kind == "not_found") res.sendStatus(404);
+        else res.sendStatus(500);
+      } else res.send(data);
+    },
+  );
+};
+exports.redeem = (req, res) => {
+  Course.redeem(req.body.sessionKey, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
+
+exports.generateCodes = (req, res) => {
+  Course.generateCodes(req.params.length, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
+
 exports.updateOne = (req, res) => {
   Course.update(req.params.id, req.body, (err, data) => {
     if (err) res.sendStatus(500);

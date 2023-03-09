@@ -9,11 +9,12 @@ const upload = multer({
   dest: path.join(__dirname, "..", "uploads/"),
 });
 const uploader = require("../middlewares/upload.middleware");
+var auth = require("../middlewares/auth.middlewares");
 
 router.get("/lessons", lesson.findAll);
 router.post("/addLesson", lesson.create);
-router.get("/lesson/:id", lesson.findOne);
-router.get("/courseLessons/:id", lesson.findByCourseId);
+router.get("/lesson/:id", auth.roles("all"), lesson.findOne);
+router.get("/courseLessons/:id", auth.roles("all"), lesson.findByCourseId);
 router.put("/lesson/:id", lesson.updateOne);
 router.put("/lessonImage/:id", uploader.single("file"), lesson.updateImage);
 router.delete("/lesson/:id", lesson.deleteOne);

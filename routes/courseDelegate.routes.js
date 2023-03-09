@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const courseDelegate = require("../controllers/courseDelegate.controllers");
+var auth = require("../middlewares/auth.middlewares");
 
 router.get("/courseDelegates", courseDelegate.findAll);
 router.post("/addCourseDelegate", courseDelegate.create);

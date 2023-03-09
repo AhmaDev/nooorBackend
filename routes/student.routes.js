@@ -5,6 +5,7 @@ const student = require("../controllers/student.controllers");
 router.get("/students", student.findAll);
 router.post("/addStudent", student.create);
 router.get("/student/:id", student.findOne);
+router.get("/studentInfo/:id", student.findByUserId);
 router.put("/student/:id", student.updateOne);
 router.delete("/student/:id", student.deleteOne);
 

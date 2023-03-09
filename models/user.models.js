@@ -1,5 +1,6 @@
 const connection = require("../helpers/db");
 var bcrypt = require("bcryptjs");
+const { sendMessage } = require("../middlewares/notifications.middlewares");
 
 const User = function (user) {
   this.username = user.username;
@@ -57,6 +58,15 @@ User.create = (newUser, result) => {
   });
 };
 
+User.sendNotifications = (body, result) => {
+  sendMessage({
+    title: body.title,
+    body: body.body,
+    recievers: recievers,
+  });
+  result(null, { message: "done" });
+};
+
 User.findById = (id, result) => {
   connection.query(
     `SELECT idUser, username, roleId, roleName FROM user JOIN role ON user.roleId = role.idRole WHERE idUser = ${id}`,
@@ -70,6 +80,23 @@ User.findById = (id, result) => {
         result({ kind: "not_found" }, null);
       } else {
         result(null, res[0]);
+      }
+    },
+  );
+};
+User.checkPhoneNumber = (phone, result) => {
+  connection.query(
+    `SELECT * FROM user WHERE phone = '${phone}'`,
+    (err, res) => {
+      if (err) {
+        console.log("Find user by ID error:", err);
+        result(err, null);
+        return;
+      }
+      if (res.length == 0) {
+        result({ kind: "not_found" }, null);
+      } else {
+        result(null, "ok");
       }
     },
   );
@@ -154,6 +181,20 @@ User.update = (id, user, result) => {
         return;
       }
       result(null, { idUser: id, ...user });
+    },
+  );
+};
+User.updateSession = (key, user, result) => {
+  connection.query(
+    `UPDATE userSession SET ? WHERE sessionKey = ${key}`,
+    user,
+    (err, res) => {
+      if (err) {
+        console.log("Error while editing a user", err);
+        result(err, null);
+        return;
+      }
+      result(null, { message: "done" });
     },
   );
 };

@@ -3,7 +3,7 @@ const connection = require("../helpers/db");
 const CourseDelegate = function (courseDelegate) {
   this.delegateId = courseDelegate.delegateId;
   this.status = courseDelegate.status;
-  this.courseId = courseDelegate.courseId;
+  this.teacherId = courseDelegate.teacherId;
 };
 
 CourseDelegate.create = (newCourseDelegate, result) => {
@@ -29,7 +29,7 @@ CourseDelegate.getAll = (result) => {
 
 CourseDelegate.findById = (id, result) => {
   connection.query(
-    `SELECT * FROM courseDelegate WHERE courseId = ${id}`,
+    `SELECT courseDelegate.*, user.username, user.phone, delegate.image, delegate.latitude, delegate.longitude, user.provinceId FROM courseDelegate LEFT JOIN user ON courseDelegate.delegateId = user.idUser LEFT JOIN delegate ON delegate.userId = user.idUser WHERE teacherId = ${id}`,
     (err, res) => {
       if (err) {
         console.log("Find By ID: courseDelegate error:", err);

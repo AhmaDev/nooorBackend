@@ -50,6 +50,19 @@ CourseStudent.findById = (id, result) => {
     },
   );
 };
+CourseStudent.findByCourseId = (id, result) => {
+  connection.query(
+    `SELECT *, DATE_FORMAT(courseStudent.createdAt, '%Y-%m-%d') AS enrollDate FROM courseStudent LEFT JOIN user ON user.idUser = courseStudent.studentId LEFT JOIN student ON student.userId = user.idUser LEFT JOIN avatar ON avatar.idAvatar = student.avatarId LEFT JOIN courseGroup ON courseGroup.idCourseGroup = courseStudent.courseGroupId WHERE courseStudent.courseId = ${id} ORDER BY user.username ASC`,
+    (err, res) => {
+      if (err) {
+        console.log("Find By ID: courseStudent error:", err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    },
+  );
+};
 
 CourseStudent.update = (id, courseStudent, result) => {
   connection.query(

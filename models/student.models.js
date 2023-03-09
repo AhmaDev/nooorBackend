@@ -27,7 +27,24 @@ Student.getAll = (result) => {
 
 Student.findById = (id, result) => {
   connection.query(
-    `SELECT * FROM student LEFT JOIN user ON student.userId = user.idUser WHERE idStudent = ${id}`,
+    `SELECT student.* , user.username FROM student LEFT JOIN user ON student.userId = user.idUser WHERE idStudent = ${id}`,
+    (err, res) => {
+      if (err) {
+        console.log("Find By ID: student error:", err);
+        result(err, null);
+        return;
+      }
+      if (res.length == 0) {
+        result({ kind: "not_found" }, null);
+      } else {
+        result(null, res[0]);
+      }
+    },
+  );
+};
+Student.findByUserId = (id, result) => {
+  connection.query(
+    `SELECT * FROM student LEFT JOIN user ON student.userId = user.idUser LEFT JOIN avatar ON student.avatarId = avatar.idAvatar LEFT JOIN category ON category.idCategory = student.subCategoryId WHERE student.userId = ${id}`,
     (err, res) => {
       if (err) {
         console.log("Find By ID: student error:", err);

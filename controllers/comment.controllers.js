@@ -23,6 +23,12 @@ exports.findAll = (req, res) => {
     else res.send(data);
   });
 };
+exports.findByLesson = (req, res) => {
+  Comment.findByLesson(req.params.id, (err, data) => {
+    if (err) res.sendStatus(500);
+    else res.send(data);
+  });
+};
 
 exports.findOne = (req, res) => {
   Comment.findById(req.params.id, (err, data) => {

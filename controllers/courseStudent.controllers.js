@@ -36,6 +36,14 @@ exports.findOne = (req, res) => {
     } else res.send(data);
   });
 };
+exports.findByCourseId = (req, res) => {
+  CourseStudent.findByCourseId(req.params.id, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
 exports.updateOne = (req, res) => {
   CourseStudent.update(req.params.id, req.body, (err, data) => {
     if (err) res.sendStatus(500);

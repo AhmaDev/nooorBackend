@@ -61,6 +61,14 @@ exports.create = (req, res) => {
   });
 };
 
+exports.sendNotification = (req, res) => {
+  User.sendNotifications(req.body, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") res.sendStatus(404);
+      else res.sendStatus(500);
+    } else res.send(data);
+  });
+};
 exports.findAll = (req, res) => {
   User.getAll((err, data) => {
     if (err) res.sendStatus(500);
@@ -68,12 +76,13 @@ exports.findAll = (req, res) => {
   });
 };
 
-exports.findOne = (req, res) => {
-  User.findById(req.params.id, (err, data) => {
+exports.findOne = (req, res) => {};
+exports.checkPhoneNumber = (req, res) => {
+  User.checkPhoneNumber(req.params.phone, (err, data) => {
     if (err) {
       if (err.kind == "not_found") res.sendStatus(404);
       else res.sendStatus(500);
-    } else res.send(data);
+    } else res.sendStatus(200);
   });
 };
 exports.findByRoleId = (req, res) => {
@@ -105,6 +114,12 @@ exports.logout = (req, res) => {
 
 exports.updateOne = (req, res) => {
   User.update(req.params.id, req.body, (err, data) => {
+    if (err) res.sendStatus(500);
+    else res.send(data);
+  });
+};
+exports.updateSession = (req, res) => {
+  User.updateSession(req.params.key, req.body, (err, data) => {
     if (err) res.sendStatus(500);
     else res.send(data);
   });
