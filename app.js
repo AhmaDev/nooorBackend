@@ -6,6 +6,7 @@ var cors = require("cors");
 const fs = require("fs");
 const { sendMessage } = require("./middlewares/notifications.middlewares");
 var app = express();
+const bodyParser = require("body-parser");
 
 // app.use(history());
 
